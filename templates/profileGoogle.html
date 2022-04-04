@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    {% load socialaccount %}
+<body>
+</body>
+<!-- div container html using bootstrap  -->
+    <div class="container">
+        <figure class="figure"> 
+            <img src="{{ user.socialaccount_set.all.0.extra_data.picture }}" class="figure-img img-fluid rounded" alt="logo">
+        </figure>
+        <div class="row">
+            <h3> Name </h3> {{ user.socialaccount_set.all.0.extra_data.name }} <br>
+            <h3> Picture </h3> {{ user.socialaccount_set.all.0.extra_data.picture }}  <br>
+            <h3> Email  </h3> {{ user.socialaccount_set.all.0.extra_data.email }}  <br>
+         </div>
+        <a href="{% url 'seed2:create' %}" style="text-decoration: none;"> Create</a>
+        <a href="{% url 'seed2:list' %}" style="text-decoration: none;"> List</a>
+    </div>
+</html>

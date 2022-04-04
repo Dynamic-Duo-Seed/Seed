@@ -1,0 +1,164 @@
+{% extends "layouts/base-fullscreen.html" %}
+{% load static%}
+{% block title %} Tema Detalle {% endblock %}
+{% load static%}
+{% block content %} 
+{% load tz %}
+
+
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <!--espacio para las actividades-->
+            <div class="col-md-7 grid-margin">
+                <div class="card w-100 mr-3 mb-3">
+                    <div class="col m-3 grid-margin transparent">
+                        <div class="card-body">
+                            <div class="row">
+                                <h1 class="col-9 display-2">{{actividad.nombre_ac}}</h1>
+                                <div class="col-3 d-flex justify-content-end align-items-start">
+                                    <button type="button" onclick="warningDeleteActividad(nombre='{{actividad.nombre_ac}}',pk='{{actividad.codigo}}',padre='1')" class="ml-3 btn btn-primary btn-rounded btn-icon">
+                                        <i class="ti-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <h4 class="">Tema: {{actividad.tema_actividad}}</h4>
+                            <h4 class="">Estructura de datos: {{actividad.estructura_de_datos}}</h4>
+                            <p blockquote class="blockquote" class="">Descripcion: {{actividad.descripcion}}</p>
+                            <p class="text-dark d-flex justify-content-end">Fecha Actual: {{ actividad.timeleft }}</p>
+                            <div class="row">
+                                <p class="text-dark mr-3">{{actividad.fecha_inicio}} - {{actividad.fecha_fin}}</p>
+                            </div>
+                        </div>          
+                    </div>
+                    <!--fin espacio para las actividades-->
+                </div>
+                <div class="card w-100 mr-3 mb-3">
+                    <div class="col m-3 grid-margin transparent">
+                        <div class="card-body">
+                            <h2 class="">Estudiantes</h2> 
+                            <!-- Listado de estudiantes que entregaron actividades"-->
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="DataTable">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Estudiante</th>
+                                            <th scope="col">Estado</th>
+                                            <th scope="col">Calificar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- td table -->
+                                        {% for ae in entregaActividad%}
+                                        <tr>
+                                            <td>{{ae.estudiante}}</td>
+                                            <td>{{ae.get_estado_display}}</td>
+                                            <td>
+                                                <a href="{% url 'seed2:calificarActividad' ae.estudiante.user.id ae.activity.codigo %}" class="btn btn-primary">
+                                                    CALIFICAR
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <!-- FIN Listado de estudiantes que entregaron actividades"-->
+            </div>
+            <!--espacio para actividades grupos-->
+            <div class="col-md-5 grid-margin">
+                <!--crear las actividades -->
+                <div class="row">
+                    <div class="card w-100 mb-3">
+                        <div class="card-body">
+                            <h4 class="card-title">Actualizar Actividad</h4>
+                            <form class="forms-sample" method="POST">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="form-group col">
+                                        <label for="exampleInputName1">Codigo Actividad</label>
+                                        <input type="number" class="form-control" id="codigo" name="codigo" placeholder="Name" min="1" value="{{actividad.codigo}}" readonly />
+                                    </div>
+                                    <div class="form-group col">
+                                        <label for="exampleInputName1">Nombre Actividad</label>
+                                        <input type="text" class="form-control" id="nombre_ac" name="nombre_ac" placeholder="Name" value="{{actividad.nombre_ac}}" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleTextarea1">Descripcion</label>
+                                    <textarea class="form-control" id="descripcion" name="descripcion" value="" rows="4">{{actividad.descripcion}}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputName1">Tema Actividad</label><br />
+                                    {{form.tema_actividad}}
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleTextarea1">Estructura de datos</label><br />
+                                    {{form.estructura_de_datos}}
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col">
+                                        <label for="exampleTextarea1">Fecha inicio</label>
+                                        <input class="form-control" id="fecha_inicio" name="fecha_inicio" type="datetime-local" min="{{actividad.getFechaInicio}}" value="{{actividad.getFechaInicio}}" />
+                                    </div>
+                                    <div class="form-group col">
+                                        <label for="exampleTextarea1">Fecha fin</label>
+                                        <input class="form-control" id="fecha_fin" name="fecha_fin" type="datetime-local" min="{{actividad.getFechaFin}}" value="{{actividad.getFechaFin}}" />
+                                    </div>
+                                </div>
+        
+                                <div class="row pl-3 pr-3 pb-3">
+                                    <label for="exampleTextarea1">
+                                        Visibilidad
+                                        <div class="form-check col">
+                                            <label class="form-check-label">
+                                                {{form.es_visible}} Mostrar
+                                            </label>
+                                        </div>
+                                    </div>
+                                <button type="submit" class="btn btn-block btn-primary mr-2">Update</button>   
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--fin crear las actividades -->
+                <!--actividades pendientes-->
+                <div class="row">
+                    <div class="card w-100 p-3">
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <h2 class="card-title col-6">Actividades sin publicar</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--fin actividades pendientes-->
+            </div>
+            <!--fin espacio para actividades grupos-->
+        </div>        
+    </div>
+    <!-- content-wrapper ends -->
+</div>
+
+
+
+  {% endblock content %}
+  
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<!-- Plugin js for this page -->
+    <script src="{%static 'vendors/chart.js/Chart.min.js'%}"></script>
+    <script src="{%static 'vendors/datatables.net/jquery.dataTables.js'%}"></script>
+    <script src="{%static 'vendors/datatables.net-bs4/dataTables.bootstrap4.js'%}"></script>
+    <script src="{%static 'js/dataTables.select.min.js'%}"></script>
+    <!-- End plugin js for this page -->
+    <!-- Custom js for this page-->
+    <script src="{%static 'js/dashboard.js'%}"></script>
+    <script src="{%static 'js/Chart.roundedBarCharts.js'%}"></script>
+    <script src="{%static 'js/sweetAlert.js'%}"></script>
+    <!-- End custom js for this page-->
+{% endblock javascripts %} 

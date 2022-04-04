@@ -1,0 +1,152 @@
+{% extends "layouts/base-fullscreen.html" %}
+{% load static%}
+{% block title %} Grupos {% endblock %}
+{% load static%}
+{% block content %} 
+
+
+<div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row">
+            <div class="col-md-12 grid-margin">
+              <div class="row">
+                <div class="col-12 col-xl-8 mb-4 mb-xl-0">
+                  <h3 class="font-weight-bold">Bienvenido</h3>
+                  <h6 class="font-weight-normal mb-0">Administrar Actividades </h6>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <!--espacio para las actividades-->
+            <div class="col-md-7 grid-margin">
+              
+                  <!--Actividades-->
+                  {% for a in actividades %}
+                  <div class="card w-100 mr-3 mb-3">
+                      <div class="col m-3 grid-margin transparent">
+                          <div class="card-body">
+                            <div class="row">
+                              <h1 class="col-9 display-2"><a href="{% url 'seed2:updateActividad' a.codigo%}">{{a.nombre_ac}}</a></h1>
+                              <div class="col-3 d-flex justify-content-end align-items-start">                                            
+                                <button type="button" onclick="warningDeleteActividad(nombre='{{a.nombre_ac}}',pk='{{a.codigo}}')" class="ml-3 btn btn-primary btn-rounded btn-icon ">
+                                    <i class="ti-trash"></i>
+                                </button>                               
+                            </div>  
+                            </div>                              
+                              <h4 class="">Tema: {{a.tema_actividad}}</h4>
+                              <h4 class="">Estructura de datos: {{a.estructura_de_datos}}</h4>
+                              <p blockquote class="blockquote" class="">Descripcion: {{a.descripcion}}</p>
+                              <p class="text-dark d-flex justify-content-end">Fecha Actual: {{ a.timeleft }}</p>
+                              <div class="row">
+                                  <p class="text-dark mr-3">{{a.fecha_inicio}} - {{a.fecha_fin}}</p>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  {% endfor %}
+                  <!--fin actividades-->
+            </div>
+            <!--fin espacio para las actividades-->
+
+            <!--espacio para actividades grupos-->
+              <div class="col-md-5 grid-margin">
+              <!--crear las actividades -->
+                <div class="row">
+                    <div class="card w-100 mb-3">
+                      <div class="card-body">
+                        <h4 class="card-title">Crear Actividad</h4> 
+                        <!--Form Actividades-->
+                        <!--{'codigo', 'nombre_ac', 'descripcion', 'estructura_de_datos', 'tema_actividad', 'fecha_inicio', 'fecha_fin', 'es_visible'}-->
+                        <form class="forms-sample" method="POST">
+                          {% csrf_token %}
+                          <div class="row">                            
+                            <div class="form-group col">
+                              <label for="exampleInputName1">Codigo Actividad</label>
+                              <input type="number" class="form-control" id="codigo" name="codigo" placeholder="Name" min="1" required>
+                            </div>
+                            <div class="form-group col">
+                              <label for="exampleInputName1">Nombre Actividad</label>
+                              <input type="text" class="form-control" id="nombre_ac" name="nombre_ac" placeholder="Name">
+                            </div>
+                          </div>
+                          <div class="form-group">
+                              <label for="exampleTextarea1">Descripcion</label>
+                              <textarea class="form-control" id="descripcion" name="descripcion" rows="4"></textarea>
+                          </div>
+                          <div class="form-group">
+                            <label for="exampleInputName1">Tema Actividad</label><br>
+                            {{form.tema_actividad}}
+                          </div>
+                          <div class="form-group">
+                              <label for="exampleTextarea1">Estructura de datos</label><br>
+                              {{form.estructura_de_datos}}
+                          </div>
+                          <div class="row">                            
+                            <div class="form-group col">
+                              <label for="exampleTextarea1">Fecha inicio</label>
+                              <input class="form-control"  id="fecha_inicio" name="fecha_inicio" type="datetime-local" min="today">
+                              
+                            </div>
+                            <div class="form-group col">
+                              <label for="exampleTextarea1">Fecha fin</label>
+                              <input class="form-control"  id="fecha_fin" name="fecha_fin" type="datetime-local" min="today">
+                            </div>
+                          </div>
+
+                          <div class="row pl-3 pr-3 pb-3">
+                          <label for="exampleTextarea1">Visibilidad
+                            <div class="form-check col">
+                              <label class="form-check-label">
+                                {{form.es_visible}} 
+                                Mostrar
+                              </label>
+                            </div></label>
+                            
+                          </div>
+                          <button type="submit" class="btn btn-block btn-primary mr-2">Submit</button>
+                          
+                        </form>
+                        <!--End Form Actividades-->
+                      </div>
+                    </div>
+                </div>
+                <!--fin crear las actividades -->
+                <!--actividades pendientes-->
+                <div class="row ">
+                  <div class="card w-100 p-3 ">
+                      <div class="card-body">
+                        <div class="row mb-3">
+                        <h2 class="card-title col-6">Actividades pendientes</h2>
+                        <button class="btn btn-primary col-6">Notificar por correo</button>
+                        </div>
+                      </div>
+                  </div>
+                </div>
+                <!--fin actividades pendientes-->
+              </div>
+            <!--fin espacio para actividades grupos-->
+          </div>
+        </div>
+        <!-- content-wrapper ends -->
+      </div>
+
+
+  {% endblock content %}
+  
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<!-- Plugin js for this page -->
+  <script src="{%static 'vendors/chart.js/Chart.min.js'%}"></script>
+  <script src="{%static 'vendors/datatables.net/jquery.dataTables.js'%}"></script>
+  <script src="{%static 'vendors/datatables.net-bs4/dataTables.bootstrap4.js'%}"></script>
+  <script src="{%static 'js/dataTables.select.min.js'%}"></script>
+  <!-- End plugin js for this page -->
+  <!-- Custom js for this page-->
+  <script src="{%static 'js/dashboard.js'%}"></script>
+  <script src="{%static 'js/Chart.roundedBarCharts.js'%}"></script>
+  <script src="{%static 'js/sweetAlert.js'%}"></script>
+  <!-- End custom js for this page-->
+{% endblock javascripts %} 
+
